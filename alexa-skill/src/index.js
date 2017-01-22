@@ -1,7 +1,7 @@
 var Alexa = require('alexa-sdk');
 var pluralize = require('pluralize');
-var welcomeMessage  = 'Welcome to your fridge. What food would you like to add first?'
-var welcomeReprompt = 'What do you want to add first?'
+var welcomeMessage  = 'Welcome to your fridge. What food would you like to add first?';
+var welcomeReprompt = 'What do you want to add first?';
 
 var states = {
     EDITMODE: '_EDITMODE',
@@ -11,7 +11,7 @@ var states = {
 
 var appId = "amzn1.ask.skill.cf0270dc-41a0-4f7e-949d-a527e1d83321";
 
-var storage = function() {}
+var storage = function() {};
 
 var statelessHandlers = {
     'NewSession': function() {
@@ -34,7 +34,7 @@ var statelessHandlers = {
         /* TODO: ask for confirmation
         this.attributes['food'] = {};
         this.attributes['drinks'] = {};*/
-    }
+    },
     'Unhandled': function() {
         console.log('unhandled');
         this.emit(":tell", "unhandled intent");
@@ -45,8 +45,8 @@ var editStateHandlers = Alexa.CreateStateHandler(states.EDITMODE, {
     var weight = this.event.request.intent.slots.Weight,
             volume = this.event.request.intent.slots.Volume,
             amount = this.event.request.intent.slots.Amount,
-            food   = pluralize.singular(this.event.request.intent.slots.Food),
-            drink  = pluralize.singular(this.event.request.intent.slots.Drink),
+            food   = this.event.request.intent.slots.Food,
+            drink  = this.event.request.intent.slots.Drink,
             speechOutput = "";
     if (!food.value && !drink.value) {
            this.emit(':ask', 'sorry, I did not understand the item, please say that again', 'Please ask again');
@@ -54,6 +54,7 @@ var editStateHandlers = Alexa.CreateStateHandler(states.EDITMODE, {
         }
     var amountValue = parseInt(amount.value);
     if(food.value) {
+      food.value   = pluralize.singular(food.value);
       if (!this.event.request.intent.slots.Volume.hasOwnProperty("value")) {
         amountValue = 1;
       }
@@ -87,6 +88,7 @@ var editStateHandlers = Alexa.CreateStateHandler(states.EDITMODE, {
       speechOutput += "Adding " + food.value + '. ';  
       this.attributes.expirationItem = {"type": "foods", "value": food.value};
     } else if (drink.value) {
+      drink.value  = pluralize.singular(drink.value);
       if (volume.value === "liter") {
         volume.value = "milliliter";
         amountValue *= 1000;
@@ -133,8 +135,9 @@ var editStateHandlers = Alexa.CreateStateHandler(states.EDITMODE, {
     var weight = this.event.request.intent.slots.Weight,
     volume = this.event.request.intent.slots.Volume,
     amount = this.event.request.intent.slots.Amount,
-    food   = pluralize.singular(this.event.request.intent.slots.Food),
-    drink  = pluralize.singular(this.event.request.intent.slots.Drink);
+    food   = this.event.request.intent.slots.Food,
+    drink  = this.event.request.intent.slots.Drink,
+    speechOutput = "";
     if (!food.value && !drink.value) {
       response.ask('sorry, I did not understand the item, please say that again', 'Please ask again');
       return;
@@ -142,6 +145,7 @@ var editStateHandlers = Alexa.CreateStateHandler(states.EDITMODE, {
     var amountValue = parseInt(amount.value);
     var targetItem, speechOutput = '';
     if(food.value) {
+      food.value   = pluralize.singular(food.value);
         if (weight.value === "kilo" || weight.value === "kilogram") {
             weight.value  = "gram";
             amountValue *= 1000;
@@ -176,6 +180,7 @@ var editStateHandlers = Alexa.CreateStateHandler(states.EDITMODE, {
         }
         speechOutput += "Removed " + food.value + '. ';
     } else if (drink.value) {
+      drink.value  = pluralize.singular(drink.value);
         if (volume.value === "liter") {
             volume.value = "milliliter";
             amountValue *= 1000;
@@ -215,24 +220,27 @@ var editStateHandlers = Alexa.CreateStateHandler(states.EDITMODE, {
         this.emit(':tell', speechOutput);
   },
   'RemoveAllIntent' : function() {
-    var food   = pluralize.singular(this.event.request.intent.slots.Food),
-    drink  = pluralize.singular(this.event.request.intent.slots.Drink);
+    var food    = this.event.request.intent.slots.Food,
+        drink   = this.event.request.intent.slots.Drink;
     if (!food.value && !drink.value) {
       response.ask('sorry, I did not understand the item, please say that again', 'Please ask again');
       return;
     }
+    var speechOutput = "";
     if(food.value) {
-      var speechOutput = food.value;
+      food.value  = pluralize.singular(food.value);
+      speechOutput += food.value;
       if (this.attributes['food'] && this.attributes['food'].hasOwnProperty(food.value)) {
         for (var category in Object.keys(this.attributes.food[food.value])) {
             this.attributes.food[food.value][category] = 0;
         }
       }
     } else if(drink.value) {
-      var speechOutput = drink.value;
-      if (this.attributes['drink'] && this.attributes['drink'].hasOwnProperty(drink.value)) {
-        for (var category in Object.keys(this.attributes.drink[drink.value])) {
-            this.attributes.drink[drink.value][category] = 0;
+      drink.value = pluralize.singular(drink.value);
+      speechOutput += drink.value;
+      if (this.attributes['drinks'] && this.attributes['drinks'].hasOwnProperty(drink.value)) {
+        for (var category in Object.keys(this.attributes.drinks[drink.value])) {
+            this.attributes.drinks[drink.value][category] = 0;
         }
       }
     }
