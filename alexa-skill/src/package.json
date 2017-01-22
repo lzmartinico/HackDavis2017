@@ -18,6 +18,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-      "alexa-sdk": "^1.0.6"
+      "alexa-sdk": "^1.0.6",
+      "pluralize": "^3.1.0"
    }
 }
