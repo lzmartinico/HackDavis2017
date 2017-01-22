@@ -5,7 +5,8 @@ var welcomeReprompt = 'What do you want to add first?'
 
 var states = {
     EDITMODE: '_EDITMODE',
-    CONFIRMMODE: '_CONFIRMMODE'
+    CONFIRMMODE: '_CONFIRMMODE',
+    EXPIRATIONMODE: '_EXPIRATIONMODE'
 };
 
 var appId = "amzn1.ask.skill.cf0270dc-41a0-4f7e-949d-a527e1d83321";
@@ -84,6 +85,7 @@ var editStateHandlers = Alexa.CreateStateHandler(states.EDITMODE, {
         this.attributes.food[food.value] = vals;
       }
       speechOutput += "Adding " + food.value + '. ';  
+      this.attributes.expirationItem = {"type": "foods", "value": food.value};
     } else if (drink.value) {
       if (volume.value === "liter") {
         volume.value = "milliliter";
@@ -121,9 +123,11 @@ var editStateHandlers = Alexa.CreateStateHandler(states.EDITMODE, {
       }
 
       speechOutput += "Adding " + drink.value + '. ';
+      this.attributes.expirationItem = {"type": "drinks", "value": drink.value};
     }
     this.emit(':saveState', true);
     this.emit(':tell', speechOutput);
+    this.handler.state = states.EXPIRATIONMODE;
   },
   'RemoveItemIntent': function() {
     var weight = this.event.request.intent.slots.Weight,
@@ -294,10 +298,23 @@ var confirmStateHandlers = Alexa.CreateStateHandler(states.CONFIRMMODE, {
   }
 });
 
+var expirationStateHandler = Alexa.CreateStateHandler(states.EXPIRATIONMODE, {
+  'AddExpirationIntent': function() {
+    var date = this.event.request.intent.slots.Date,
+        item = this.attributes.expirationItem.value,
+        type = this.attributes.expirationItem.type;
+
+        this.attributes[type][value].expiration = date;
+        this.emit(':saveState', true);
+        this.emit(':tell', "o. k. , I have saved it");
+        this.handler.state = states.EDITMODE;
+  }
+});
+
 exports.handler = function (event, context, callback) {
     alexa = Alexa.handler(event, context);
     alexa.appId = appId;
     alexa.dynamoDBTableName = "FoodData";
-    alexa.registerHandlers(statelessHandlers, editStateHandlers, confirmStateHandlers);
+    alexa.registerHandlers(statelessHandlers, editStateHandlers, confirmStateHandlers, expirationStateHandler);
     alexa.execute();
 };
