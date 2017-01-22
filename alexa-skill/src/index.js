@@ -29,6 +29,11 @@ var statelessHandlers = {
         this.handler.state = states.EDITMODE;
         this.emitWithState("RemoveItemIntent");
     },
+    'ResetIntent': function() {
+        /* TODO: ask for confirmation
+        this.attributes['food'] = {};
+        this.attributes['drinks'] = {};*/
+    }
     'Unhandled': function() {
         console.log('unhandled');
         this.emit(":tell", "unhandled intent");
