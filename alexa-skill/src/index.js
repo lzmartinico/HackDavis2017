@@ -47,20 +47,19 @@ var editStateHandlers = Alexa.CreateStateHandler(states.EDITMODE, {
         }
     var amountValue = parseInt(amount.value);
     if(food.value) {
+      if (!this.event.request.intent.slots.Volume.hasOwnProperty("value")) {
+        amountValue = 1;
+      }
       if (weight.value === "kilo" || weight.value === "kilogram") {
         weight.value  = "gram";
         amountValue *= 1000;
       }
-      if (!amount.value)
-      {
-        amount.value = 1;
-      }
       if (this.attributes['food'] && this.attributes['food'].hasOwnProperty(food.value)) {
-        if (weight.value) {
+        if (this.event.request.intent.slots.Weight.hasOwnProperty("value")) {
           if (weight.value[weight.value.length - 1] === 's') {
             weight.value = weight.value.substring(0,weight.value.length - 1);
           }
-        this.attributes.food[food.value][weight.value] += amountValue;
+          this.attributes.food[food.value][weight.value] += amountValue;
         } else {
           this.attributes.food[food.value]["amount"] += amountValue;
         }
@@ -71,12 +70,11 @@ var editStateHandlers = Alexa.CreateStateHandler(states.EDITMODE, {
               "ounce":    0,
               "gram":     0
               };
-        if (weight.value) {
+        if (this.event.request.intent.slots.Weight.hasOwnProperty("value")) {
           vals[weight.value] += amountValue;
         } else {
           vals["amount"] += amountValue;
         }
-        console.log(this.attributes);
         this.attributes.food[food.value] = vals;
       }
       speechOutput += "Adding " + food.value + '. ';  
@@ -86,9 +84,9 @@ var editStateHandlers = Alexa.CreateStateHandler(states.EDITMODE, {
         amountValue *= 1000;
       }
 
-      if (!amount.value)
+      if (!this.event.request.intent.slots.Volume.hasOwnProperty("value"))
       {
-        amount.value = 1;
+        amountValue = 1;
       }
       if (this.attributes.drinks.hasOwnProperty(drink.value)) {
         if (volume.value) {
@@ -117,7 +115,7 @@ var editStateHandlers = Alexa.CreateStateHandler(states.EDITMODE, {
       }
 
       speechOutput += "Adding " + drink.value + '. ';
-    }    
+    }
     this.emit(':saveState', true);
     this.emit(':tell', speechOutput);
   },
@@ -223,7 +221,7 @@ var confirmStateHandlers = Alexa.CreateStateHandler(states.CONFIRMMODE, {
       this.emit(':tell', "o. k. ,  you have none left");
       return;
     }
-    if (this.attributes.tempItem === "food") {
+    if (this.attributes.tempItem.type === "food") {
       var vals = {
         "amount":   0,
         "pound":    0,
