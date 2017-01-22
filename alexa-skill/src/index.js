@@ -207,7 +207,30 @@ var editStateHandlers = Alexa.CreateStateHandler(states.EDITMODE, {
         this.emit(':tell', speechOutput);
   },
   'RemoveAllIntent' : function() {
-
+    var food   = this.event.request.intent.slots.Food,
+    drink  = this.event.request.intent.slots.Drink;
+    if (!food.value && !drink.value) {
+      response.ask('sorry, I did not understand the item, please say that again', 'Please ask again');
+      return;
+    }
+    if(food.value) {
+      var speechOutput = food.value;
+      if (this.attributes['food'] && this.attributes['food'].hasOwnProperty(food.value)) {
+        for (var category in Object.keys(this.attributes.food[food.value])) {
+            this.attributes.food[food.value][category] = 0;
+        }
+      }
+    } else if(drink.value) {
+      var speechOutput = drink.value;
+      if (this.attributes['drink'] && this.attributes['drink'].hasOwnProperty(drink.value)) {
+        for (var category in Object.keys(this.attributes.drink[drink.value])) {
+            this.attributes.drink[drink.value][category] = 0;
+        }
+      }
+    }
+    speechOutput += " removed";
+    this.emit(':saveState', true);
+    this.emit(':tell', speechOutput);
   }
 });
 
