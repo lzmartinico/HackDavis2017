@@ -16,5 +16,8 @@
       "environment"
   ],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+      "alexa-sdk": "^1.0.6"
+   }
 }
