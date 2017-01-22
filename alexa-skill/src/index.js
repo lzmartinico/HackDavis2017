@@ -1,4 +1,5 @@
 var Alexa = require('alexa-sdk');
+var pluralize = require('pluralize');
 var welcomeMessage  = 'Welcome to your fridge. What food would you like to add first?'
 var welcomeReprompt = 'What do you want to add first?'
 
@@ -38,8 +39,8 @@ var editStateHandlers = Alexa.CreateStateHandler(states.EDITMODE, {
     var weight = this.event.request.intent.slots.Weight,
             volume = this.event.request.intent.slots.Volume,
             amount = this.event.request.intent.slots.Amount,
-            food   = this.event.request.intent.slots.Food,
-            drink  = this.event.request.intent.slots.Drink,
+            food   = pluralize.singular(this.event.request.intent.slots.Food),
+            drink  = pluralize.singular(this.event.request.intent.slots.Drink),
             speechOutput = "";
     if (!food.value && !drink.value) {
            this.emit(':ask', 'sorry, I did not understand the item, please say that again', 'Please ask again');
@@ -123,8 +124,8 @@ var editStateHandlers = Alexa.CreateStateHandler(states.EDITMODE, {
     var weight = this.event.request.intent.slots.Weight,
     volume = this.event.request.intent.slots.Volume,
     amount = this.event.request.intent.slots.Amount,
-    food   = this.event.request.intent.slots.Food,
-    drink  = this.event.request.intent.slots.Drink;
+    food   = pluralize.singular(this.event.request.intent.slots.Food),
+    drink  = pluralize.singular(this.event.request.intent.slots.Drink);
     if (!food.value && !drink.value) {
       response.ask('sorry, I did not understand the item, please say that again', 'Please ask again');
       return;
@@ -205,8 +206,8 @@ var editStateHandlers = Alexa.CreateStateHandler(states.EDITMODE, {
         this.emit(':tell', speechOutput);
   },
   'RemoveAllIntent' : function() {
-    var food   = this.event.request.intent.slots.Food,
-    drink  = this.event.request.intent.slots.Drink;
+    var food   = pluralize.singular(this.event.request.intent.slots.Food),
+    drink  = pluralize.singular(this.event.request.intent.slots.Drink);
     if (!food.value && !drink.value) {
       response.ask('sorry, I did not understand the item, please say that again', 'Please ask again');
       return;
