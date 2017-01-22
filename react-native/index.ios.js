@@ -13,6 +13,7 @@ import {
   TextInput,
   View
 } from 'react-native';
+global.___DEV___ = false
 
 class FoodComponent extends Component {
 
@@ -44,19 +45,16 @@ export default class fridgeProject extends Component {
           .then((result)=> {
               this.forceUpdate();
               result.json().then((res) => {console.log(res);
-              console.log("los");
               this.setState({items:res}, () => {
                 if(this.state.items.Items[0].length == 0){
 
                 }
-                console.log('lalala');
               
               var newList = [];
-              var uId = 1;
+              var uId = 0;
               for (var i in this.state.items.Items[uId].mapAttr.M.drinks.M){
                  var list = [];
                  if(i.includes(this.state.text.toLowerCase())){
-                  list.push(i);
                   if(this.state.items.Items[uId].mapAttr.M.drinks.M[i].M.milliliter.N > 0){
                     list.push(" milliliter: ");
                     list.push(this.state.items.Items[uId].mapAttr.M.drinks.M[i].M.milliliter.N);
@@ -119,10 +117,10 @@ export default class fridgeProject extends Component {
   }
 
   render() {
+    // var input = this.state.text;
     console.log("here")
     if(this.state.rend123 === 0){
-      console.log(this.state.rend123);
-      return <Text>Loading...</Text>;
+      return <Spinner style={{paddingLeft:240, paddingTop:100}} color='red' />
     } else {
       return (
       <Container>
@@ -133,7 +131,6 @@ export default class fridgeProject extends Component {
           </Header>
           
           <Content scrollEventThrottle={60} >
-            
             <Card style={{marginRight: 10, marginLeft: 10, marginTop: 25}}>
               {this.state.biglist.map((elem) => {
                 return <CardItem><FoodComponent Food={elem}/></CardItem>;
@@ -144,7 +141,7 @@ export default class fridgeProject extends Component {
       </Container>
     );
     }
-    var input = this.state.text;
+    
     var exampleJson = {
     "version": "1.0",
     "response": {
