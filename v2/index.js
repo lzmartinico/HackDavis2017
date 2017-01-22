@@ -103,7 +103,7 @@ var statelessHandlers = {
 		}    
 		this.emit(':saveState', true);
 		this.emit(':tell', speechOutput);
-	});
+	}
 };
 
 
