@@ -86,7 +86,7 @@ var editStateHandlers = Alexa.CreateStateHandler(states.EDITMODE, {
         this.attributes.food[food.value] = vals;
       }
       speechOutput += "Adding " + food.value + '. ';  
-      this.attributes.expirationItem = {"type": "foods", "value": food.value};
+      this.attributes.expirationItem = {"type": "food", "value": food.value};
     } else if (drink.value) {
       drink.value  = pluralize.singular(drink.value);
       if (volume.value === "liter") {
@@ -127,9 +127,9 @@ var editStateHandlers = Alexa.CreateStateHandler(states.EDITMODE, {
       speechOutput += "Adding " + drink.value + '. ';
       this.attributes.expirationItem = {"type": "drinks", "value": drink.value};
     }
-    this.emit(':saveState', true);
-    this.emit(':tell', speechOutput);
+    speechOutput += " set an expiration date";
     this.handler.state = states.EXPIRATIONMODE;
+    this.emit(':ask', speechOutput, "Please set an expiration date.");
   },
   'RemoveItemIntent': function() {
     var weight = this.event.request.intent.slots.Weight,
@@ -247,6 +247,54 @@ var editStateHandlers = Alexa.CreateStateHandler(states.EDITMODE, {
     speechOutput += " removed";
     this.emit(':saveState', true);
     this.emit(':tell', speechOutput);
+  },
+  'QueryAllIntent' : function() {
+    var speechOutput = "You have ";
+    var foods = this.attributes.food;
+    var drinks = this.attributes.drinks;
+    Object.keys(foods).forEach(function(food) {
+        if (speechOutput.length > 9) {
+          speechOutput += " and ";
+        }
+        var curItem = "";
+      Object.keys(foods[food]).forEach(function(measurement) {
+        if (foods[food][measurement] <= 0 || measurement === "expiration") {
+          return;
+        }
+        if (curItem.length > 0) {
+          curItem += ", ";
+        }
+        if (measurement !== "amount") {
+          curItem += foods[food][measurement] + " " +
+                          measurement + (foods[food][measurement] === 1 ? "" : "s");
+        } else {
+          curItem += foods[food][measurement] + " unit" + (foods[food][measurement] === 1 ? "" : "s");
+        }
+      });
+      speechOutput += curItem + " of " + food;
+    });
+    Object.keys(drinks).forEach(function(drink) {
+        if (speechOutput.length > 9) {
+          speechOutput += " and ";
+        }
+        var curItem = "";
+      Object.keys(drinks[drink]).forEach(function(measurement) {
+        if (drinks[drink][measurement] <= 0 || measurement === "expiration") {
+          return;
+        }
+        if (curItem.length > 0) {
+          curItem += ", ";
+        }
+        if (measurement !== "amount") {
+          curItem += drinks[drink][measurement] + " " +
+                          measurement + (drinks[drink][measurement] === 1 ? "" : "s");
+        } else {
+          curItem += drinks[drink][measurement] + " unit" + (drinks[drink][measurement] === 1 ? "" : "s");
+        }
+      });
+      speechOutput += curItem + " of " + drink;
+    });
+    this.emit(":tell", speechOutput);
   }
 });
 
@@ -270,7 +318,6 @@ var confirmStateHandlers = Alexa.CreateStateHandler(states.CONFIRMMODE, {
         "gram":     0
       };
       var amountValue = parseInt(amount.value);
-      console.log(this.attributes);
       if (weight.value) {
         if (weight.value[weight.value.length - 1] === 's') {
             weight.value = weight.value.substring(0,weight.value.length - 1);
@@ -308,14 +355,21 @@ var confirmStateHandlers = Alexa.CreateStateHandler(states.CONFIRMMODE, {
 
 var expirationStateHandler = Alexa.CreateStateHandler(states.EXPIRATIONMODE, {
   'AddExpirationIntent': function() {
-    var date = this.event.request.intent.slots.Date,
-        item = this.attributes.expirationItem.value,
-        type = this.attributes.expirationItem.type;
-
+    var date  = this.event.request.intent.slots.Date,
+        value = this.attributes.expirationItem.value,
+        type  = this.attributes.expirationItem.type;
+        if (!date.value) {
+          this.handler.state = states.EDITMODE;
+          this.emit(':saveState', true);
+          this.emit(":tell", "OK, I'll not set an expiration date");
+        }
+        console.log(type);
+        console.log(this.attributes);
         this.attributes[type][value].expiration = date;
+        delete this.attributes.expirationItem;
+        this.handler.state = states.EDITMODE;
         this.emit(':saveState', true);
         this.emit(':tell', "o. k. , I have saved it");
-        this.handler.state = states.EDITMODE;
   }
 });
 
