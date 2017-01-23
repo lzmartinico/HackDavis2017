@@ -1,0 +1,45 @@
+AddItemIntent Add {Amount} {Food}
+AddItemIntent Add {Amount} {Weight} of {Food}
+AddItemIntent Add {Amount} {Volume} of {Drink}
+AddItemIntent Add an {Food}
+AddItemIntent Add a {Food}
+AddItemIntent Add an {Weight} {Food}
+AddItemIntent Add a {Weight} {Food}
+AddItemIntent Add {Food}
+AddItemIntent Add an {Drink}
+AddItemIntent Add a {Drink}
+AddItemIntent Add an {Volume} {Drink}
+AddItemIntent Add a {Volume} {Drink}
+AddItemIntent Add {Drink}
+RemoveItemIntent Remove {Amount} {Food}
+RemoveItemIntent Remove {Amount} {Weight} of {Food}
+RemoveItemIntent Remove a {Food}
+RemoveItemIntent Remove an {Food}
+RemoveItemIntent Remove {Amount} {Volume} of {Drink}
+RemoveAllIntent Remove all {Food}
+RemoveAllIntent Remove all {Drink}
+RemoveAllIntent Remove all the {Food}
+RemoveAllIntent Remove all the {Drink}
+RemoveAllIntent Remove all my {Food}
+RemoveAllIntent Remove all my {Drink}
+AmountIntent {Amount} {Weight}
+AmountIntent {Amount} {Volume}
+AmountIntent I have {Amount} {Weight} left
+AmountIntent I have {Amount} {Volume} left
+AmountIntent {Amount} {Weight} left
+AmountIntent {Amount} {Volume} left
+AmountIntent I have finished it
+AmountIntent I have finished that
+AmountIntent none
+AmountIntent {Amount}
+AddExpirationIntent on {Date}
+AddExpirationIntent {Date}
+AddExpirationIntent It expires on {Date}
+AddExpirationIntent Remind me about it before {Date}
+AddExpirationIntent No thanks
+AddExpirationIntent No
+AddExpirationIntent AMAZON.LITERAL
+QueryAllIntent What is in my fridge
+QueryAllIntent What is in the fridge
+CreateFridgeIntent create a new fridge
+ResetIntent Reset the fridge

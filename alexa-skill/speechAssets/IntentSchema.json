@@ -1,0 +1,111 @@
+{
+  "intents": [
+    {
+      "intent": "CreateFridgeIntent"
+    },
+    {
+      "intent": "AddItemIntent",
+      "slots": [
+        {
+          "name": "Amount",
+          "type": "AMAZON.NUMBER"
+        },
+        {
+          "name": "Weight",
+          "type": "WEIGHT"
+        },
+        {
+          "name": "Volume",
+          "type": "VOLUME"
+        },
+        {
+          "name": "Food",
+          "type": "AMAZON.Food"
+        },
+        {
+          "name": "Drink",
+          "type": "AMAZON.Drink"
+        }
+      ]
+    },
+    {
+      "intent": "RemoveItemIntent",
+      "slots": [
+        {
+          "name": "Amount",
+          "type": "AMAZON.NUMBER"
+        },
+        {
+          "name": "Weight",
+          "type": "WEIGHT"
+        },
+        {
+          "name": "Volume",
+          "type": "VOLUME"
+        },
+        {
+          "name": "Food",
+          "type": "AMAZON.Food"
+        },
+        {
+          "name": "Drink",
+          "type": "AMAZON.Drink"
+        }
+      ]
+    },
+    {
+        "intent": "RemoveAllIntent",
+      	"slots": [
+          {
+          "name": "Food",
+          "type": "AMAZON.Food"
+        },
+        {
+          "name": "Drink",
+          "type": "AMAZON.Drink"
+        }
+        ]
+    },
+    {
+      "intent": "AmountIntent",
+      "slots": [
+        {
+          "name": "Amount",
+          "type": "AMAZON.NUMBER"
+        },
+        {
+          "name": "Weight",
+          "type": "WEIGHT"
+        },
+    	{
+          "name": "Volume",
+          "type": "VOLUME"
+        }
+      ]
+    },
+    {
+      "intent": "ResetIntent"
+    },
+    {
+      "intent": "AddExpirationIntent",
+      "slots" : [
+        {
+          "name": "Date",
+          "type": "AMAZON.DATE"
+        }
+        ]
+    },
+    {
+      "intent": "QueryAllIntent"
+    },
+    {
+      "intent": "AMAZON.HelpIntent"
+    },
+    {
+      "intent": "AMAZON.StopIntent"
+    },
+    {
+      "intent": "AMAZON.CancelIntent"
+    }
+  ]
+ }
